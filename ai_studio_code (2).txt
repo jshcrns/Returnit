@@ -1,0 +1,92 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
+
+export default function App() {
+  const [isLost, setIsLost] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Visual Background Orbs */}
+      <View style={[styles.orb, { top: -40, left: -40, backgroundColor: '#6366f1' }]} />
+      <View style={[styles.orb, { bottom: 80, right: -40, backgroundColor: '#a855f7' }]} />
+
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <Text style={styles.logo}>SECURE<Text style={{color: '#818cf8'}}>TAG</Text></Text>
+
+        {/* THE GLASS CARD */}
+        <View style={styles.glassWrapper}>
+          <BlurView intensity={Platform.OS === 'ios' ? 40 : 100} tint="dark" style={styles.blurContainer}>
+            <View style={styles.cardContent}>
+              <View style={styles.cardHeader}>
+                <View>
+                  <Text style={styles.deviceName}>My Device</Text>
+                  <Text style={styles.imei}>IMEI: **** 8829</Text>
+                </View>
+                <Ionicons name="phone-portrait-outline" size={28} color="white" />
+              </View>
+
+              <View style={styles.bountyBox}>
+                <Text style={styles.bountyText}>Reward: $100</Text>
+              </View>
+
+              <View style={styles.buttonRow}>
+                <TouchableOpacity 
+                  style={[styles.actionBtn, isLost ? styles.btnRed : styles.btnGlass]} 
+                  onPress={() => setIsLost(!isLost)}
+                >
+                  <Text style={styles.btnText}>{isLost ? "🔴 LOST" : "🟢 SAFE"}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.actionBtn, styles.btnGlass]}>
+                  <Text style={styles.btnText}>📍 GPS</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </BlurView>
+        </View>
+
+        <TouchableOpacity style={styles.searchBtn}>
+          <Text style={styles.searchBtnText}>Search for Owner</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#020617' },
+  orb: { position: 'absolute', width: 280, height: 280, borderRadius: 140, opacity: 0.25 },
+  scroll: { padding: 25 },
+  logo: { fontSize: 24, fontWeight: 'bold', color: 'white', marginBottom: 40, textAlign: 'center', letterSpacing: 2 },
+  
+  // GLASSMORPHISM CORE
+  glassWrapper: {
+    borderRadius: 35,
+    overflow: 'hidden', // Required for blur to stay inside borders
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)', // The white "shine" on the edge
+    backgroundColor: Platform.OS === 'web' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+  },
+  blurContainer: {
+    padding: 25,
+    // On some Androids, BlurView needs a fallback background color
+    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+  },
+  cardContent: {
+    backgroundColor: 'transparent',
+  },
+  
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25 },
+  deviceName: { color: 'white', fontSize: 22, fontWeight: '800' },
+  imei: { color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 4 },
+  bountyBox: { backgroundColor: 'rgba(255,255,255,0.08)', padding: 12, borderRadius: 20, marginBottom: 25, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  bountyText: { color: '#fbbf24', fontWeight: 'bold', textAlign: 'center', fontSize: 16 },
+  buttonRow: { flexDirection: 'row', gap: 15 },
+  actionBtn: { flex: 1, padding: 16, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  btnGlass: { backgroundColor: 'rgba(255, 255, 255, 0.12)' },
+  btnRed: { backgroundColor: 'rgba(239, 68, 68, 0.5)' },
+  btnText: { color: 'white', fontWeight: 'bold', fontSize: 14 },
+  searchBtn: { marginTop: 30, padding: 22, borderRadius: 25, backgroundColor: '#4f46e5', alignItems: 'center', shadowColor: '#4f46e5', shadowOpacity: 0.5, shadowRadius: 20, elevation: 10 },
+  searchBtnText: { color: 'white', fontWeight: 'bold', fontSize: 16 }
+});
